@@ -1,2 +1,5 @@
 ### Consulter la page des pokémons 
 GET http://localhost:3000/pokemons
+
+### Consulter la page d'un pokemon  
+GET http://localhost:3000/pokemons/1

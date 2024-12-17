@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { pokemonController } from "../controllers/pokemon.controller.js";
 import { controllerWrapper } from "../middlewares/controller.wrapper.js";
+import { teamController } from "../controllers/team.controller.js";
 
 
 
@@ -16,3 +17,8 @@ router.route('/pokemons')
 
     router.route('/pokemons/:id(\\d+)')
     .get(controllerWrapper(pokemonController.getOne));
+
+//** EQUIPES */
+   router.route('/teams')
+     .post(controllerWrapper(teamController.create))
+     .get(controllerWrapper(teamController.getAll));

@@ -19,6 +19,6 @@ router.route('/pokemons')
     .get(controllerWrapper(pokemonController.getOne));
 
 //** EQUIPES */
-   router.route('/teams')
-     .post(controllerWrapper(teamController.create))
-     .get(controllerWrapper(teamController.getAll));
+    router.route('/teams')
+        .post(controllerWrapper(teamController.create))
+        .get(controllerWrapper(teamController.getAll));

@@ -410,6 +410,10 @@ VALUES
   ( 1, 'Ultimate Team', 'La meilleure team du monde'),
   ( 2, 'La Team de l''enfer', 'Le feuuuuu'),
   ( 3, 'Squad fofolle', 'Pour tout gagner');
+
+-- Reset the ID sequence because we manually inserted the ID in the command before, so the sequence needs an update.
+SELECT setval('team_id_seq', (SELECT MAX(id) from "team"));
+
 INSERT INTO "team_pokemon"
     ("pokemon_id", "team_id")
 VALUES

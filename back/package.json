@@ -5,11 +5,11 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "node --watch index.js ",
-    "db:sync": "node data/create_tables.sql",
-    "db:seed": "node data/seeding_tables.sql",
-    "db:reset": "npm run db:sync && npm run db:seed"
-  },
+    "dev": "node --watch index.js ",   
+    "db:create-sql": "psql -U admin_pokedex -d pokedex -f ./data/create_tables.sql",
+    "db:seed-sql": "psql -U admin_pokedex -d pokedex -f ./data/seeding_tables.sql",
+    "db:reset-sql": "npm run db:create-sql && npm run db:seed-sql"
+    },
   "keywords": [],
   "author": "",
   "license": "ISC",

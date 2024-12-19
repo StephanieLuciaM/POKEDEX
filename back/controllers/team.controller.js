@@ -47,6 +47,24 @@ export const teamController ={
             console.error(err);
             res.status(500).json({ error: 'Internal Server Error' });
         }
-    }
+    },
+
+    async update(req, res, next){
+        const { id } = req.params;
+        const {name} = req.body;
+
+        // Recherche de l'équipe avec l'ID
+        const team = await Team.findByPk(id);
+        if(!team){
+            return res.status(404).json({error: 'The team s name not found'});
+        }
+        
+        // Mise à jour du nom de l'équipe (on ne met à jour que le 'name' ici)
+        await team.update({name});
+    
+        res.json(team);
+        },
+    
+
 };
 

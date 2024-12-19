@@ -6,3 +6,21 @@ GET http://localhost:3000/pokemons/1
 
 ### Consulter la page des équipes
 GET http://localhost:3000/teams
+
+### Création de team (il faut penser a sauter une ligne après le header (Content-Type: application/json)  
+POST http://localhost:3000/teams
+Content-Type: application/json
+
+{
+    "name": "Bad Bear Team",
+    "description": "Les ours qui font mals"
+}
+
+
+### Modifier le nom d'une équipe
+PATCH http://localhost:3000/teams/6  
+Content-Type: application/json
+
+{
+    "name": "Ultra B B Team Ultimate"
+}

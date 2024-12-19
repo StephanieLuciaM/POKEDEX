@@ -1,4 +1,6 @@
-import { createTeam, getTeams } from "./api.js";
+import { createTeam, getTeams, editTeam } from "./api.js";
+import { closeAddTeamModal, closeEditTeamModal } from "./utils.js";
+
 
 /**
  * Ecouteur d'événement sur le lien de navigation pour ouvrir la page des Teams
@@ -37,6 +39,9 @@ export function listenToClickOnNavAddTeam() {
     });
 }
 
+
+
+
 async function showAddTeamModal() {
     const modal = document.querySelector("#add_team_modal");
 
@@ -54,6 +59,48 @@ async function showAddTeamModal() {
         console.error("Modal de création d'équipe introuvable.");
     }
 }
+
+
+// Fonction qui permet d'ouvrir la modale d'édition d'une équipe
+async function openEditTeamModal(teamData) {
+    const editTeamModal = document.querySelector("#edit_team_modal");
+
+        // récuperer le nom actuel (il a pu etre modifié)
+
+const currentName = document.querySelector(`[data-id='${teamData.id}'] [slot='team-template-name']`).textContent;
+
+
+  // remettre le nom actuel de la team dans le champ nom
+  editTeamModal.querySelector("#edit-team-name").value = currentName;
+
+  // mettre dans le champ caché, l'id de la liste courante
+  editTeamModal.querySelector("#edit-team-id").value = teamData.id;
+
+  if (editTeamModal) {
+    // Affiche la modale
+    editTeamModal.classList.add('is-active');
+     editTeamModal.querySelector("input").focus();
+
+        /*/ Récupère le champ pour le nom de l'équipe
+        const currentName  = editTeamModal.querySelector("#edit-team-name");
+
+        // Remplir le champ avec le nom de l'équipe
+        if (nameInput) {
+            nameInput.value = teamData.name; // Remplir le champ de nom avec le nom de l'équipe
+        }
+
+        // Ajouter l'écouteur pour fermer la modale
+        const closeTeamModalElement = editTeamModal.querySelector(".close");
+        if (closeTeamModalElement) {
+            closeTeamModalElement.addEventListener("click", closeEditTeamModal);
+        } else {
+            console.error("L'élément de fermeture de la modale n'a pas été trouvé.");
+        }*/
+    } else {
+        console.error("Modal de modification d'équipe introuvable.");
+    }
+}
+
 
 /**
  * Fonction qui récupère les teams depuis l'API et les affiche dans le DOM
@@ -95,6 +142,17 @@ export function listenToSubmitOnAddFormTeamModal() {
             return;
         }
 
+
+         // Ajouter des Pokémon à l'équipe 
+        // const pokemons = await getPokemons(); // Récupération des Pokémon disponibles
+        //if (pokemons && pokemons.length > 0) {
+             // Exemple: on va simplement ajouter les 3 premiers Pokémon disponibles à l'équipe
+        //for (let i = 0; i < 3 && i < pokemons.length; i++) {
+               //await addPokemonToTeam(pokemons[i], createdTeam.id);
+           //}
+        //}
+
+
         // Ajouter l'équipe créée au contenu
         appTeamContainer(createdTeam);
 
@@ -102,6 +160,41 @@ export function listenToSubmitOnAddFormTeamModal() {
         closeAddTeamModal();
     });
 }
+
+
+/**
+ * Ecouteur d'événement submit sur le formulaire d'édition de liste
+ */
+export function listenToSubmitOnEditTeamForm() {
+    // on récupere le formulaire de la modal #form_edit_team_modal
+    const editTeamFormElement = document.querySelector("#form_edit_team_modal");
+    // on place un écouteur de soumission sur ce form
+    editTeamFormElement.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+      // récuperer les informations du formulaire
+    const editedTeam = Object.fromEntries(new FormData(editTeamFormElement));
+
+      // envoyer la demande de modification à l'API
+    const updatedTeam = await editTeam(editedTeam);
+
+      // soit j'ai obtenu "null", soit la team modifiée
+    if (!updatedTeam) {
+        return;
+    }
+
+      // mettre à jour l'affichage pour refleter la data
+      // je dois récuperer la bonne team pour modifier son nom dans mon interface
+    const teamToEditElement = document.querySelector(`[data-id='${updatedTeam.id}'] [slot='team-template-name']`);
+    teamToEditElement.textContent = updatedTeam.name;
+
+      // fermer et reset la modal
+    closeEditTeamModal();
+
+    });
+}
+
+
 
 function appTeamContainer(teamData) {
     const template = document.querySelector("#team-template");
@@ -123,6 +216,14 @@ function appTeamContainer(teamData) {
     } else {
         console.log("Aucun pokémon trouvé pour cette équipe.");
     }
+    // Récupération du bouton Administrer et ajout de l'événement pour ouvrir la modale d'édition
+    const editButton = clone.querySelector(".btnModalTeam");
+    if (editButton) {
+        editButton.addEventListener("click", (event) => {
+            // Appeler la fonction pour ouvrir la modale d'édition et remplir les champs
+            openEditTeamModal(teamData);
+        });
+    }
     document.querySelector("#app").appendChild(clone);
 }
 
@@ -135,22 +236,6 @@ export function listenToClickOnTeamModalClosingElement() {
     closeTeamModalElement.addEventListener("click", closeAddTeamModal);
 }
 
-
-function closeAddTeamModal() {
-    const modal = document.querySelector("#add_team_modal");
-    
-    if (modal) {
-        modal.classList.remove("is-active"); // Retrait de la classe pour masquer la modale
-        
-        // Réinitialisation du formulaire à son état initial
-        const form = modal.querySelector("form"); // Cible le formulaire à l'intérieur de la modale
-        if (form) {
-            form.reset(); // Réinitialise les champs du formulaire
-        }
-        
-        fetchAndDisplayTeams();
-    }
-}
 
 
 

@@ -1,4 +1,5 @@
 import { getPokemons } from "./api.js";
+import { closePkmDetailModal } from "./utils.js";
 
 
 
@@ -19,6 +20,8 @@ export function listenToClickOnNavHome() {
     });
 
 }
+
+
 
 
 /**
@@ -96,16 +99,3 @@ export function listenToClickOnModalClosingPkmDetail() {
     }
 }
     
-/**
-   * Fonction qui permet de fermer la modale ouverte
-   */
-export function closePkmDetailModal() {
-    //on cible la modale avec l'ID et la classe is-active
-    const pkmModalElement = document.querySelector("#pkm_detail.is-active"); 
-    
-if (pkmModalElement) {
-    pkmModalElement.classList.remove("is-active");
-}
-    
-    
-}

@@ -1,0 +1,170 @@
+import { createTeam, getTeams } from "./api.js";
+
+
+
+
+/**
+ * Ecouteur d'événement sur le lien de navigation pour ouvrir la page des Teams
+ */
+export function listenToClickOnNavTeam() {
+    const navTeamElement = document.querySelector("#nav-item-team");
+    //console.log(navTeamElement);
+    navTeamElement.addEventListener("click", async (event) => {
+        
+        event.preventDefault(); // Empêche le comportement par défaut (par exemple, navigation vers un lien)
+
+        // Vider le contenu HTML de la balise main
+        const mainElement = document.querySelector("#app");
+        mainElement.innerHTML = "";
+
+        await fetchAndDisplayTeams(); // Appel de la fonction pour récupérer et afficher les teams
+
+    });
+}
+
+/**
+ * Ecouteur d'événement sur le lien de navigation pour Add Team créée
+ */
+export function listenToClickOnNavAddTeam() {
+    const addNavTeamElement = document.querySelector("#nav-item-add-team");
+
+
+    addNavTeamElement.addEventListener("click", async (event) => {
+        
+        event.preventDefault(); // Empêche le comportement par défaut (par exemple, navigation vers un lien)
+
+        // Vider le contenu HTML de la balise main
+        const mainElement = document.querySelector("#app");
+        mainElement.innerHTML = "";
+
+         // Afficher la modal de création d'une équipe
+        await showAddTeamModal();
+
+        listenToSubmitOnAddFormTeamModal(); // Appel de la fonction pour récupérer et afficher le formulaire de creation d'une team
+
+    });
+}
+async function showAddTeamModal() {
+    const modal = document.querySelector("#add_team_modal");
+
+    if (modal) {
+        // Afficher la modal en ajoutant la classe 'is-active'
+        modal.classList.add("is-active");
+    } else {
+        console.error("Modal de création d'équipe introuvable.");
+    }
+}
+
+/**
+* Fonction qui récupère les teams depuis l'API et les affiche dans le DOM
+*/
+export async function fetchAndDisplayTeams() {
+
+    const teams = await getTeams();
+
+    // pour chaque chaque team récupéré
+    if (!teams) {
+        return;
+    }
+    for (const team of teams) {
+        appTeamContainer(team);
+    }
+}
+
+/**
+ * Ecouteur d'événement submit sur le formulaire de création de Team
+ */
+export function listenToSubmitOnAddFormTeamModal() {
+    // Récupération des éléments
+    //const addTeamModal = document.querySelector("#add_team_modal");
+    //const closeAddTeamModal = document.querySelector//("#add_team_modal .close");
+    const addFormTeamElement = document.querySelector("#form_team_modal");
+
+    // Vérifiez si le formulaire est présent dans le DOM
+    if (!addFormTeamElement) {
+        console.error("Le formulaire de création d'équipe n'a pas été trouvé.");
+        return;
+    }
+     // Fermeture de la modal
+    //closeAddTeamModal.addEventListener("click", () => {
+     //   addTeamModal.classList.remove("is-active");
+   // })
+    // on place un écouteur de soumission sur ce form
+    addFormTeamElement.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+      // console.log("form soumis");
+      // à la soumission, on récupère la data (en utilisant formData)
+    const newTeam = Object.fromEntries(new FormData(addFormTeamElement));
+
+      // appel API
+    const createdTeam = await createTeam(newTeam);
+
+      // si createdTeam est null
+    if (!createdTeam) {
+        // je bloque la fonction
+        return;
+    }
+
+      // ajouter la liste crée au contenu
+    appTeamContainer(teamData);
+
+     // Fermer la modal après la création
+    closeAddTeamModal();
+
+    });
+}
+
+function appTeamContainer(teamData){
+    const template = document.querySelector("#team-template");
+    //console.log(template);
+    // cloner le contenu du template
+    const clone = template.content.cloneNode(true);
+    clone.querySelector("[slot='team-template-name']").textContent = teamData.name;
+    clone.querySelector("[slot='team-template-description']").textContent = teamData.description;
+
+    // Gestion des images : On ajoute les images des Pokémon associés à l'équipe
+    const imgElements = clone.querySelectorAll("[slot='pokemon-template-img']");
+
+    // Boucle for...of pour remplir les images avec les Pokémon
+    let index = 0;// Le 'index' permet de suivre la position des images dans le DOM pour associer chaque Pokémon à une image spécifique de manière ordonnée.
+
+    for (const pokemon of teamData.pokemons) {
+        if (imgElements[index]) { 
+            imgElements[index].setAttribute('src', `./src/img/${pokemon.id}.webp`);
+            imgElements[index].setAttribute('alt', pokemon.name); // Ajout d'un alt pour l'accessibilité
+            index++;
+        }
+    }
+    // Ajout du clone dans le DOM 
+    document.querySelector("#app").appendChild(clone);
+    //console.log("Équipe ajoutée au DOM");
+
+}
+
+function closeAddTeamModal() {
+    const modal = document.querySelector("#add_team_modal");
+    if (modal) {
+        modal.classList.remove("is-active");
+    }
+}
+
+
+import { fetchAndDisplayPokemons, listenToClickOnModalClosingPkmDetail, listenToClickOnNavHome } from "./pokemon.module.js";
+import { fetchAndDisplayTeams, listenToClickOnNavTeam, listenToSubmitOnAddFormTeamModal, listenToClickOnNavAddTeam} from "./team.module.js";
+console.log("pokedex fire");
+
+export function init(){
+    fetchAndDisplayPokemons();
+    listenToClickOnModalClosingPkmDetail();
+    fetchAndDisplayTeams();
+    listenToClickOnNavTeam();
+    listenToClickOnNavHome();
+    listenToSubmitOnAddFormTeamModal();
+    listenToClickOnNavAddTeam()
+    
+}
+
+
+
+

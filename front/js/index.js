@@ -1,5 +1,12 @@
-import { fetchAndDisplayPokemons, listenToClickOnModalClosingPkmDetail, listenToClickOnNavHome } from "./pokemon.module.js";
-import { fetchAndDisplayTeams, listenToClickOnNavTeam, listenToClickOnNavAddTeam, listenToClickOnTeamModalClosingElement} from "./team.module.js";
+import { fetchAndDisplayPokemons,
+        listenToClickOnModalClosingPkmDetail, 
+        listenToClickOnNavHome } from "./pokemon.module.js";
+
+import { fetchAndDisplayTeams, 
+        listenToClickOnNavTeam,
+        listenToClickOnNavAddTeam, 
+        listenToClickOnTeamModalClosingElement, 
+        listenToSubmitOnEditTeamForm} from "./team.module.js";
 
 console.log("pokedex fire");
 
@@ -14,4 +21,5 @@ export function init() {
     listenToClickOnNavTeam();
     listenToClickOnNavAddTeam();  // Appel de la fonction d'écoute pour "Add Team"
     listenToClickOnTeamModalClosingElement();
+    listenToSubmitOnEditTeamForm();
 }

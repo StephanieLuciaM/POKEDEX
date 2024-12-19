@@ -170,6 +170,36 @@
       </div>
     </div>
 
+    <!-- Edit Team Modal -->
+<div class="is-flex is-justify-content-center my-6">
+  <div class="modal" id="edit_team_modal">
+    <div class="modal-background"></div>
+    <div class="modal-content">
+      <header class="modal-card-head">
+        <h2 class="modal-card-title">Modifier le nom d'une Team</h2>
+        <button class="delete close"></button> <!-- Bouton de fermeture -->
+      </header>
+      <div class="modal-card-body">
+        <!-- formulaire-->
+        <form id="form_edit_team_modal">
+          <div class="field">
+            <label class="label">Nom</label>
+            <div class="control">
+              <input class="input" type="text" id="edit-team-name" placeholder="Name of the team to update">
+               <!-- ce champ est caché pour l'utilisateur, on y renseigne une value qu'on pourra récuperer facilement à la soumission du form -->
+              <input id="edit-team-id" type="hidden" name="id">
+            </div>
+          </div>
+          <div class="control">
+            <button class="button is-primary" type="submit">Submit</button>
+          </div>
+        </form>
+        <!-- fin de formulaire-->
+      </div>
+    </div>
+  </div>
+</div>
+
     
     <!-- Template pour un Pokemon -->
     <template id="pokemon-template">

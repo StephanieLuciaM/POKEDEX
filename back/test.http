@@ -29,4 +29,7 @@ Content-Type: application/json
 GET http://localhost:3000/team/2/pokemons
 
 ### Association d'un pokemon à une team 
-PUT http://localhost:3000/teams/1/pokemons/3
+PUT http://localhost:3000/teams/5/pokemons/4
+
+### Dissociation d'un pokemon à une team 
+DELETE http://localhost:3000/teams/5/pokemons/4

@@ -1,4 +1,4 @@
-import { Team } from "../models/associations.js";
+import { Team, Pokemon } from "../models/associations.js";
 import { sequelize } from "../models/client.js";
 
 
@@ -77,8 +77,65 @@ export const teamController ={
             });
             if (!team) return res.status(404).json(`Pas de team à l'id : ${id}`);
             res.status(200).json(team);
-        }
-        
+        },
+
+      async addPokemon(req, res){
+    const { team_id, pokemon_id } = req.params;
+
+    const team = await Team.findByPk(team_id);
+    if(!team){
+      return res.status(404).json({error: 'Team not found'});
+    }
+
+    const pokemon = await Pokemon.findByPk(pokemon_id);
+    if(!pokemon){
+      return res.status(404).json({error: 'Pokemon not found'});
+    }
+
+    // Function qui est utilisé dynamiquement en fonction de l'association
+    const isAssociated = await team.hasPokemon(pokemon);
+    if(isAssociated){
+      return res.status(400).json({error: 'Tag already associated with card'});
+    }
+
+    // Function qui est utilisé dynamiquement en fonction de l'association
+    await team.addPokemon(pokemon_id);
+
+    // après avoir ajouté le pokemon, on est obligé de mettre à jour la team pour que les changements soient pris en compte
+    // On peut par la même occasion récupérer les POKEMONS de la TEAM
+    await team.reload({ include: { model: Pokemon, as: 'pokemons' } });
+
+
+    res.json(team);
+  },
+
+   async removePokemon(req, res){
+    const { team_id, pokemon_id } = req.params;
+
+    const team = await Team.findByPk(team_id);
+    if(!team){
+      return res.status(404).json({error: 'Team not found'});
+    }
+
+    const pokemon = await Pokemon.findByPk(pokemon_id);
+    if(!pokemon){
+      return res.status(404).json({error: 'Pokemon not found'});
+    }
+
+    const isAssociated = await team.hasPokemon(pokemon);
+    if(!isAssociated){
+      return res.status(400).json({error: 'Pokemon is not associated with card'});
+    }
+
+    // Function qui est utilisé dynamiquement en fonction de l'association
+    await team.removePokemon(pokemon_id);
+
+    // après avoir supprimé le tag, on est obligé de mettre à jour la carte pour que les changements soient pris en compte
+    await team.reload({ include: { model: Pokemon, as: 'pokemons' } });
+
+
+    res.json(team);
+  }     
 
 };
 

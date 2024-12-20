@@ -183,9 +183,10 @@
         <!-- formulaire-->
         <form id="form_edit_team_modal">
           <div class="field">
-            <label class="label">Nom</label>
+             <!-- Bien faire attention aux changements ici sinon les modif pas effectués -->
+            <label for="edit-team-name" class="label"> Nouveau Nom</label>
             <div class="control">
-              <input class="input" type="text" id="edit-team-name" placeholder="Name of the team to update">
+              <input class="input" type="text" id="edit-team-name" name ="name" placeholder="Name of the team to update">
                <!-- ce champ est caché pour l'utilisateur, on y renseigne une value qu'on pourra récuperer facilement à la soumission du form -->
               <input id="edit-team-id" type="hidden" name="id">
             </div>

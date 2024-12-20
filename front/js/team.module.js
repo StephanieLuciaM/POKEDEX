@@ -61,45 +61,6 @@ async function showAddTeamModal() {
 }
 
 
-// Fonction qui permet d'ouvrir la modale d'édition d'une équipe
-async function openEditTeamModal(teamData) {
-    const editTeamModal = document.querySelector("#edit_team_modal");
-
-        // récuperer le nom actuel (il a pu etre modifié)
-
-const currentName = document.querySelector(`[data-id='${teamData.id}'] [slot='team-template-name']`).textContent;
-
-
-  // remettre le nom actuel de la team dans le champ nom
-  editTeamModal.querySelector("#edit-team-name").value = currentName;
-
-  // mettre dans le champ caché, l'id de la liste courante
-  editTeamModal.querySelector("#edit-team-id").value = teamData.id;
-
-  if (editTeamModal) {
-    // Affiche la modale
-    editTeamModal.classList.add('is-active');
-     editTeamModal.querySelector("input").focus();
-
-        /*/ Récupère le champ pour le nom de l'équipe
-        const currentName  = editTeamModal.querySelector("#edit-team-name");
-
-        // Remplir le champ avec le nom de l'équipe
-        if (nameInput) {
-            nameInput.value = teamData.name; // Remplir le champ de nom avec le nom de l'équipe
-        }
-
-        // Ajouter l'écouteur pour fermer la modale
-        const closeTeamModalElement = editTeamModal.querySelector(".close");
-        if (closeTeamModalElement) {
-            closeTeamModalElement.addEventListener("click", closeEditTeamModal);
-        } else {
-            console.error("L'élément de fermeture de la modale n'a pas été trouvé.");
-        }*/
-    } else {
-        console.error("Modal de modification d'équipe introuvable.");
-    }
-}
 
 
 /**
@@ -168,6 +129,13 @@ export function listenToSubmitOnAddFormTeamModal() {
 export function listenToSubmitOnEditTeamForm() {
     // on récupere le formulaire de la modal #form_edit_team_modal
     const editTeamFormElement = document.querySelector("#form_edit_team_modal");
+
+
+    // on vérifie si le formulaire existe
+    if (!editTeamFormElement) {
+        console.error("Le formulaire d'édition de l'équipe n'a pas été trouvé.");
+        return;
+    }
     // on place un écouteur de soumission sur ce form
     editTeamFormElement.addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -180,17 +148,25 @@ export function listenToSubmitOnEditTeamForm() {
 
       // soit j'ai obtenu "null", soit la team modifiée
     if (!updatedTeam) {
+        console.error("Échec de la mise à jour de l'équipe.");
         return;
     }
 
       // mettre à jour l'affichage pour refleter la data
       // je dois récuperer la bonne team pour modifier son nom dans mon interface
     const teamToEditElement = document.querySelector(`[data-id='${updatedTeam.id}'] [slot='team-template-name']`);
-    teamToEditElement.textContent = updatedTeam.name;
+    if (teamToEditElement) {
+        teamToEditElement.textContent = updatedTeam.name;
 
-      // fermer et reset la modal
+          // fermer et reset la modal
     closeEditTeamModal();
 
+    } else {
+        console.error("L'élément de l'équipe à modifier n'a pas été trouvé.");
+    }
+
+
+    
     });
 }
 
@@ -201,6 +177,7 @@ function appTeamContainer(teamData) {
     const clone = template.content.cloneNode(true);
     clone.querySelector("[slot='team-template-name']").textContent = teamData.name;
     clone.querySelector("[slot='team-template-description']").textContent = teamData.description;
+    clone.querySelector("[slot='team-id']").dataset.id = teamData.id;
 
     const imgElements = clone.querySelectorAll("[slot='pokemon-template-img']");
     // On Vérifie si teamData.pokemons est un tableau avant de l'itérer
@@ -237,6 +214,37 @@ export function listenToClickOnTeamModalClosingElement() {
 }
 
 
+// Fonction qui permet d'ouvrir la modale d'édition d'une équipe
+function openEditTeamModal(teamData) {
+    const editTeamModal = document.querySelector("#edit_team_modal");
+
+        // récuperer le nom actuel (il a pu etre modifié)
+
+const currentName = document.querySelector(`[data-id='${teamData.id}'] [slot='team-template-name']`).textContent;
+ 
+
+  // remettre le nom actuel de la team dans le champ nom
+    editTeamModal.querySelector("#edit-team-name").value = currentName;
+
+  // mettre dans le champ caché, l'id de la liste courante
+    editTeamModal.querySelector("#edit-team-id").value = teamData.id;
+
+    if (editTeamModal) {
+    // Affiche la modale
+    editTeamModal.classList.add('is-active');
+    editTeamModal.querySelector("input").focus();
+
+        // Ajouter l'écouteur pour fermer la modale
+        const closeTeamModalElement = editTeamModal.querySelector(".close");
+        if (closeTeamModalElement) {
+            closeTeamModalElement.addEventListener("click", closeEditTeamModal);
+        } else {
+            console.error("L'élément de fermeture de la modale n'a pas été trouvé.");
+        }
+    } else {
+        console.error("Modal de modification d'équipe introuvable.");
+    }
+}
 
 
 

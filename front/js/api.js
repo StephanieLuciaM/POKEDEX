@@ -73,7 +73,8 @@ export async function createTeam(teamData) {
             const { id } = teamData;
     
             // Supprimer la clé 'id' car elle ne doit pas être envoyée dans le corps de la requête
-            const { id: teamId, ...teamUpdateData } = teamData;
+            delete teamData.id;
+            //const { id: teamId, ...teamUpdateData } = teamData;
             //Cela permet de séparer id du reste des données de l'équipe. teamId contiendra l'ID, mais ce n'est pas envoyé dans le corps de la requête. Les autres propriétés de teamData (comme name) seront contenues dans teamUpdateData.
     
             // Appel API
@@ -82,7 +83,7 @@ export async function createTeam(teamData) {
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify(teamUpdateData), // On envoie l'objet contenant les données à mettre à jour
+                body: JSON.stringify(teamData), // On envoie l'objet contenant les données à mettre à jour
             });
     
             // Est-ce que j'obtiens une réponse valide/exploitable ?
@@ -91,6 +92,7 @@ export async function createTeam(teamData) {
             }
     
             const editedTeam = await httpResponse.json();
+            console.log("Équipe modifiée avec succès:", editedTeam);
             return editedTeam;
             
         } catch (error) {

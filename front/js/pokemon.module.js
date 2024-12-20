@@ -21,8 +21,44 @@ export function listenToClickOnNavHome() {
 
 }
 
+/**
+ * Fonction qui ajoute un pokemon à une  team du DOM
+ * @param {Object} pokemon { id, name, hp, atk, atk_spe, def_spe, speed }
+ */
+export function addPokemontoTeam(pokemon) {
+    const { id, name, hp, atk, atk_spe, def_spe, speed, TeamId } = pokemon;
+    
+    const teamContent = document.querySelector(`[data-id='${TeamId}'] .imgContainer`);
+    const template = document.querySelector("#pokemon-template");
+    const clone = template.content.cloneNode(true);
+    clone.querySelector("[slot='pokemon-template-name']").textContent = name;
+    clone.querySelector("[slot='pokemon-template-img']").src = pokemon.imgUrl;  // Ajout de l'image du Pokémon (par exemple, image URL)
 
+    // Ajout des attributs personnalisés, comme ID ou d'autres données si nécessaire
+    clone.querySelector("[slot='card']").dataset.id = id;
+    clone.querySelector("[slot='card']").dataset.hp = hp; 
+    clone.querySelector("[slot='card']").dataset.atk = atk;
+    clone.querySelector("[slot='card']").dataset.atk_spe = atk_spe;
+    clone.querySelector("[slot='card']").dataset.def_spe = def_spe;
+    clone.querySelector("[slot='card']").dataset.speed = speed;
 
+    // event listener pour supprimer une carte
+    //clone.querySelector("[slot='delete-card-btn']").addEventListener("click", async () => {
+    ///const isDeleted = await deleteCard(card);
+      //if (! isDeleted) {
+        //return;
+      //}
+      //document.querySelector(`[slot='card'][data-id='$//{card.id}']`).remove();
+
+   // });
+
+    // event listener pour editer un pokemon
+    clone.querySelector("button btn_add_team").addEventListener("click", () => {
+        fetchAndDisplayTeams(pokemon);
+
+    teamContent.appendChild(clone);
+})
+};
 
 /**
 * Fonction qui récupère les pokemons depuis l'API et les affiche dans le DOM

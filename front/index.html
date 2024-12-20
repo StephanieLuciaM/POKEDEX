@@ -53,7 +53,7 @@
       id="app"
       class="container is-flex is-align-item-center is-flex-wrap-wrap is-justify-content-space-evenly my-6"
     >
-
+      
       <!-- Pokemon Details Modal-->
     <div class="is-flex is-justify-content-center my-6" id="open-pkm-detail-modal">
 
@@ -204,7 +204,7 @@
     
     <!-- Template pour un Pokemon -->
     <template id="pokemon-template">
-    <div class="card mb-6 has-text-centered pt-4 my-6">
+    <div class="card mb-6 has-text-centered pt-4 my-6" slot="card">
       <a>
         <div class="card-image">
           <img class="pkm_img" slot="pokemon-template-img">
@@ -214,7 +214,7 @@
         </div>
         <button class="button is-primary" id="open_pkm_detail_exemple" slot="button-open-detail-modal">
           Open Pokemon Detail
-        </button>      
+        </button>  
       </a>
     </div>
   </template>

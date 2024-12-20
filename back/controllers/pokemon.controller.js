@@ -17,5 +17,8 @@ export const pokemonController ={
         
             res.json(pokemon);
         },
+
+
 };
+
 

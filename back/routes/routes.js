@@ -18,6 +18,11 @@ router.route('/pokemons')
     router.route('/pokemons/:id(\\d+)')
     .get(controllerWrapper(pokemonController.getOne));
 
+
+    router.route('/teams/:team_id/pokemons/:pokemon_id')
+    .put(controllerWrapper(teamController.addPokemon))
+    .delete(controllerWrapper(teamController.removePokemon));
+    
 //** EQUIPES */
     router.route('/teams')
         .post(controllerWrapper(teamController.create))
@@ -25,3 +30,6 @@ router.route('/pokemons')
     
     router.route('/teams/:id(\\d+)')
         .patch(controllerWrapper(teamController.update));
+
+    // afin d'ajouter un pokemon à une équipe
+    router.get('/team/:id(\\d+)/pokemons', controllerWrapper(teamController.getOneTeamofPokemons));

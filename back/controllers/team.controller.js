@@ -65,6 +65,20 @@ export const teamController ={
         res.json(team);
         },
     
+        async getOneTeamofPokemons (req, res) {
+            const { id } = req.params;
+            const team = await Team.findByPk(Number(id), {
+                include: [
+                {
+                    association: "pokemons",
+                    include: "types",
+                },
+            ],
+            });
+            if (!team) return res.status(404).json(`Pas de team à l'id : ${id}`);
+            res.status(200).json(team);
+        }
+        
 
 };
 

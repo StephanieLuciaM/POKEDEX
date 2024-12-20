@@ -101,3 +101,30 @@ export async function createTeam(teamData) {
         }
     }
     
+/**
+ * Fonction pour ajouter un Pokémon existant à une équipe
+ */
+async function addPokemonToTeam(pokemonId, teamId) {
+    try {
+        // Requête pour ajouter un Pokémon à une équipe via une route PUT ou PATCH (selon ton backend)
+        const response = await fetch(`${apiBaseUrl}/teams/${teamId}/pokemons/${pokemonId}`, {
+            method: 'PUT',  // ou 'PATCH' si tu mets à jour la liste des Pokémon
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ pokemonId }),
+        });
+
+        if (!response.ok) {
+            throw new Error("Impossible d'ajouter ce Pokémon à l'équipe.");
+        }
+
+        // Retourner le Pokémon ou un message de succès
+        const updatedTeam = await response.json();
+        return updatedTeam;
+    } catch (error) {
+        console.error("Erreur lors de l'ajout du Pokémon à l'équipe:", error);
+        return null;
+    }
+}
+

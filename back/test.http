@@ -24,3 +24,9 @@ Content-Type: application/json
 {
     "name": "Ultra B B Team Ultimate"
 }
+
+### Récupération de tous les pokemons d'une team 
+GET http://localhost:3000/team/2/pokemons
+
+### Association d'un pokemon à une team 
+PUT http://localhost:3000/teams/1/pokemons/3

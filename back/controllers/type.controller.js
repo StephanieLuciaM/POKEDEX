@@ -4,13 +4,7 @@ import { sequelize } from "../models/client.js";
 
 export const typeController ={
     async getAll(req, res) {
-        const types =await Type.findAll({
-            include: [
-                {
-                    association: 'pokemons', // L'alias défini dans les associations
-                },
-            ],
-        });
+        const types =await Type.findAll();
         res.json(types)
     },
 

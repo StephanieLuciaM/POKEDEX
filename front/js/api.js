@@ -43,6 +43,27 @@ export async function getTeams() {
         openErrorModal("Une erreur s'est produite... veuillez rééssayer dans quelques minutes");
     }
 }
+export async function getTypes() {
+    try {
+        const httpResponse = await fetch(`${apiBaseUrl}/types`);
+    
+        // on test httpResponse.ok
+        if (! httpResponse.ok) {
+          // si pas ok, ça signifie erreur 400 ou 500
+            console.log(httpResponse);
+            return null;
+        }
+    
+        const types = await httpResponse.json();
+    
+        return types;
+        
+    } catch (error) {
+        // serveur down
+        console.error("API non acccessible...", error);
+        openErrorModal("Une erreur s'est produite... veuillez rééssayer dans quelques minutes");
+    }
+}
 
 
 export async function createTeam(teamData) {

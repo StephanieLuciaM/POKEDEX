@@ -8,6 +8,7 @@ import { fetchAndDisplayTeams,
         listenToClickOnTeamModalClosingElement, 
         listenToSubmitOnEditTeamForm,
         listenToAddPokemonToTeam} from "./team.module.js";
+import { fetchAndDisplayTypes, listenToClickOnNavTypes } from "./type.module.js";
 
 console.log("pokedex fire");
 
@@ -24,5 +25,9 @@ export function init() {
     listenToClickOnTeamModalClosingElement();
     listenToSubmitOnEditTeamForm();
     listenToAddPokemonToTeam();
+
+    listenToClickOnNavTypes();
+    fetchAndDisplayTypes();
+    
    
 ;}

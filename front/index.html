@@ -254,5 +254,19 @@
       </div>
     </section>
 </template>
+
+  <!-- Template pour un type -->
+  <template id="type-template">
+    <div class="is-flex is-justify-content-center my-6">
+      <button class="button is-flex-grow-1 mx-2" slot="type-id">
+        <!-- Un span pour le nom, un autre pour la couleur, et un autre pour l'ID -->
+        <span slot="type-template-name"></span> <!-- Slot pour le nom -->
+        <span slot="type-template-color"></span> <!-- Slot pour la couleur -->
+        <!-- Tu peux également ajouter un autre span pour l'ID ou d'autres données -->
+      </button>
+    </div>
+  </template>
+  
+  
   </body>
 </html>

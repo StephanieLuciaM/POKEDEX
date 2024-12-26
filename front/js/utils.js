@@ -8,12 +8,19 @@ import { fetchAndDisplayTeams } from "./team.module.js";
 export function closePkmDetailModal() {
     //on cible la modale avec l'ID et la classe is-active
     const pkmModalElement = document.querySelector("#pkm_detail.is-active"); 
-    
+     
 if (pkmModalElement) {
     pkmModalElement.classList.remove("is-active");
+      // Redirection vers les équipes après fermeture
+    // Réinitialisation du formulaire à son état initial
+    const form = pkmModalElement.querySelector("form"); // Cible le formulaire à l'intérieur de la modale
+    if (form) {
+        form.reset(); // Réinitialise les champs du formulaire
+    }
+
+    fetchAndDisplayTeams();
 }
-    
-    
+        
 }
 
 // Fonction pour fermer la modale

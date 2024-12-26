@@ -1,5 +1,5 @@
-import { createTeam, getTeams, editTeam } from "./api.js";
-import { closeAddTeamModal, closeEditTeamModal } from "./utils.js";
+import { createTeam, getTeams, editTeam, addPokemonToTeam, deletePokemonToTeam } from "./api.js";
+import { closeAddTeamModal, closeEditTeamModal, closePkmDetailModal } from "./utils.js";
 
 
 /**
@@ -104,16 +104,6 @@ export function listenToSubmitOnAddFormTeamModal() {
         }
 
 
-         // Ajouter des Pokémon à l'équipe 
-        // const pokemons = await getPokemons(); // Récupération des Pokémon disponibles
-        //if (pokemons && pokemons.length > 0) {
-             // Exemple: on va simplement ajouter les 3 premiers Pokémon disponibles à l'équipe
-        //for (let i = 0; i < 3 && i < pokemons.length; i++) {
-               //await addPokemonToTeam(pokemons[i], createdTeam.id);
-           //}
-        //}
-
-
         // Ajouter l'équipe créée au contenu
         appTeamContainer(createdTeam);
 
@@ -171,6 +161,115 @@ export function listenToSubmitOnEditTeamForm() {
 }
 
 
+/**
+ * Fonction d'écouteur d'événements pour le formulaire d'ajout de Pokémon à une équipe
+ */
+export function listenToAddPokemonToTeam() {
+    // Sélectionner le formulaire d'ajout de Pokémon à une équipe
+    const formAddPkmTeamElement = document.querySelector("#form_add_pkm_team");
+
+    // Vérifier si le formulaire existe
+    if (!formAddPkmTeamElement) {
+        console.error("Le formulaire d'ajout de Pokémon à une équipe n'a pas été trouvé.");
+        return;
+    }
+
+    // Ajouter un événement pour la soumission du formulaire
+    formAddPkmTeamElement.addEventListener("submit", async (event) => {
+        event.preventDefault(); // Empêcher le rechargement de la page à la soumission du formulaire
+
+        // Récupérer l'ID du Pokémon depuis un champ caché (mis à jour dynamiquement)
+        const pokemonId = formAddPkmTeamElement.querySelector(".pkm-id").value;
+
+        // Vérifier si pokemonId est défini et valide
+        if (!pokemonId) {
+            console.error("L'ID du Pokémon est manquant ou invalide.");
+            return;
+        }
+
+        // Récupérer l'ID de l'équipe sélectionnée dans le menu déroulant
+        const teamId = formAddPkmTeamElement.querySelector(".select").value;
+
+        // Vérifier si teamId est valide
+        if (!teamId) {
+            console.error("L'ID de l'équipe est manquant.");
+            return;
+        }
+
+        // Appel API pour ajouter le Pokémon à l'équipe
+        const updatedTeam = await addPokemonToTeam(pokemonId, teamId);
+
+        // Vérifier si l'ajout a réussi
+        if (!updatedTeam || !updatedTeam.pokemons || updatedTeam.pokemons.length === 0) {
+            console.error("L'ajout du Pokémon à l'équipe a échoué ou l'équipe n'a pas de Pokémon.");
+            return;
+        }
+        
+
+        // Afficher l'équipe mise à jour
+        appTeamContainer(updatedTeam); // Mettre à jour l'affichage de l'équipe
+
+        // Fermer la modale ou effectuer une autre action (si nécessaire)
+        closePkmDetailModal();    
+    });
+
+    // Écouteur pour le bouton "Delete"
+    const deleteButton = formAddPkmTeamElement.querySelector(".btn_dlt_team");
+    deleteButton.addEventListener("click", async (event) => {
+        event.preventDefault();
+
+        const pokemonId = formAddPkmTeamElement.querySelector(".pkm-id").value;
+        const teamId = formAddPkmTeamElement.querySelector(".select").value;
+
+        if (!pokemonId || !teamId) {
+            console.error("ID du Pokémon ou de l'équipe manquant.");
+            return;
+        }
+
+        // Appel API pour supprimer un Pokémon de l'équipe
+        const success = await deletePokemonToTeam(pokemonId, teamId);
+
+        if (!success) {
+            console.error("Échec de la suppression du Pokémon de l'équipe.");
+            return;
+        }
+
+        console.log("Pokémon supprimé de l'équipe avec succès !");
+
+        // Recharge l'affichage des équipes
+        await fetchAndDisplayTeams();
+
+         // Fermer la modale ou effectuer une autre action (si nécessaire)
+        closePkmDetailModal();
+
+    });
+
+}
+
+/**
+ * Fonction pour mettre à jour dynamiquement l'ID du Pokémon dans le formulaire
+ * @param {string} pokemonId - L'ID du Pokémon à ajouter à l'équipe
+ */
+export function setPokemonIdForModal(pokemonId) {
+    // Vérifiez si l'ID du Pokémon est valide avant de mettre à jour le champ caché
+    if (!pokemonId) {
+        console.error("ID du Pokémon invalide ou non défini.");
+        return;
+    }
+
+    const hiddenInput = document.querySelector(".pkm-id");
+    if (hiddenInput) {
+        hiddenInput.value = pokemonId;  // Met à jour la valeur de l'ID du Pokémon dans le formulaire
+    } else {
+        console.error("Champ caché pour l'ID du Pokémon introuvable.");
+    }
+}
+
+// Exemple d'appel de la fonction setPokemonIdForModal avec un Pokémon spécifique
+// Cette fonction peut être appelée lorsqu'on ouvre la modale de détails d'un Pokémon
+// setPokemonIdForModal(pokemonId);
+
+
 
 function appTeamContainer(teamData) {
     const template = document.querySelector("#team-template");
@@ -180,29 +279,30 @@ function appTeamContainer(teamData) {
     clone.querySelector("[slot='team-id']").dataset.id = teamData.id;
 
     const imgElements = clone.querySelectorAll("[slot='pokemon-template-img']");
-    // On Vérifie si teamData.pokemons est un tableau avant de l'itérer
+    
+    // Vérification si des Pokémon existent dans l'équipe
     if (Array.isArray(teamData.pokemons) && teamData.pokemons.length > 0) {
-        let index = 0;
-        for (const pokemon of teamData.pokemons) {
+        for (let index = 0; index < teamData.pokemons.length; index++) {
             if (imgElements[index]) {
+                const pokemon = teamData.pokemons[index];
                 imgElements[index].setAttribute('src', `./src/img/${pokemon.id}.webp`);
                 imgElements[index].setAttribute('alt', pokemon.name);
-                index++;
             }
         }
-    } else {
-        console.log("Aucun pokémon trouvé pour cette équipe.");
-    }
-    // Récupération du bouton Administrer et ajout de l'événement pour ouvrir la modale d'édition
+    } // Sinon, on ne fait rien, les images restent vides
+
+    // Ajouter l'événement d'édition
     const editButton = clone.querySelector(".btnModalTeam");
     if (editButton) {
-        editButton.addEventListener("click", (event) => {
-            // Appeler la fonction pour ouvrir la modale d'édition et remplir les champs
+        editButton.addEventListener("click", () => {
             openEditTeamModal(teamData);
         });
     }
+
+    // Ajouter le clone au DOM
     document.querySelector("#app").appendChild(clone);
 }
+
 
 /**
  * Fonction qui place les écouteurs de click sur les éléments de fermeture des modales

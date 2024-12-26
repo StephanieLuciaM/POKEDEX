@@ -168,3 +168,86 @@ export function init(){
 
 
 
+
+
+
+
+/**
+ * Fonction d'écouteur d'événements pour le formulaire d'ajout de Pokémon à une équipe
+ */
+export function listenToAddPokemonToTeam() {
+    // Sélectionner le formulaire d'ajout de Pokémon à une équipe
+    const formAddPkmTeamElement = document.querySelector("#form_add_pkm_team");
+
+
+    // Vérifier si le formulaire existe
+    if (!formAddPkmTeamElement) {
+        console.error("Le formulaire d'ajout de Pokémon à une équipe n'a pas été trouvé.");
+        return;
+    }
+
+    // Ajouter un événement pour la soumission du formulaire
+    formAddPkmTeamElement.addEventListener("submit", async (event) => {
+        event.preventDefault(); // Empêcher le rechargement de la page à la soumission du formulaire
+
+        // Récupérer l'ID du Pokémon depuis un attribut (exemple : dataset sur le bouton "Add To Team")
+        const pokemonId = formAddPkmTeamElement.dataset.pokemonId;
+
+        // Récupérer l'ID de l'équipe sélectionnée dans le menu déroulant
+        const teamId = formAddPkmTeamElement.querySelector(".select").value;
+
+        // Vérifier que les IDs sont valides
+        if (!pokemonId || !teamId) {
+            console.error("Le Pokémon ou l'équipe n'ont pas été correctement sélectionnés.");
+            return;
+        }
+
+        // Appel API pour ajouter le Pokémon à l'équipe
+        const updatedTeam = await addPokemonToTeam(pokemonId, teamId);
+
+        // Vérifier si l'ajout a réussi
+        if (!updatedTeam) {
+            console.error("L'ajout du Pokémon à l'équipe a échoué.");
+            return;
+        }
+        // Afficher l'équipe mise à jour
+        appTeamContainer(updatedTeam); // Mettre à jour l'affichage de l'équipe
+
+        // Fermer la modale ou effectuer une autre action (si nécessaire)
+        closeAddTeamModal(); 
+    });
+}
+
+
+
+function appTeamContainer(teamData) {
+    const template = document.querySelector("#team-template");
+    const clone = template.content.cloneNode(true);
+    clone.querySelector("[slot='team-template-name']").textContent = teamData.name;
+    clone.querySelector("[slot='team-template-description']").textContent = teamData.description;
+    clone.querySelector("[slot='team-id']").dataset.id = teamData.id;
+
+    const imgElements = clone.querySelectorAll("[slot='pokemon-template-img']");
+    // On Vérifie si teamData.pokemons est un tableau avant de l'itérer
+    if (Array.isArray(teamData.pokemons) && teamData.pokemons.length > 0) {
+        let index = 0;
+        for (const pokemon of teamData.pokemons) {
+            if (imgElements[index]) {
+                imgElements[index].setAttribute('src', `./src/img/${pokemon.id}.webp`);
+                imgElements[index].setAttribute('alt', pokemon.name);
+                index++;
+            }
+        }
+    } else {
+        console.log("Aucun pokémon trouvé pour cette équipe.");
+    }
+    // Récupération du bouton Administrer et ajout de l'événement pour ouvrir la modale d'édition
+    const editButton = clone.querySelector(".btnModalTeam");
+    if (editButton) {
+        editButton.addEventListener("click", (event) => {
+            // Appeler la fonction pour ouvrir la modale d'édition et remplir les champs
+            openEditTeamModal(teamData);
+        });
+    }
+    document.querySelector("#app").appendChild(clone);
+}

@@ -101,25 +101,27 @@ export async function createTeam(teamData) {
         }
     }
     
+
 /**
  * Fonction pour ajouter un Pokémon existant à une équipe
  */
-async function addPokemonToTeam(pokemonId, teamId) {
+export async function addPokemonToTeam(pokemonId, teamId) {
     try {
-        // Requête pour ajouter un Pokémon à une équipe via une route PUT ou PATCH (selon ton backend)
+        // Requête pour ajouter un Pokémon à une équipe via une route PUT
         const response = await fetch(`${apiBaseUrl}/teams/${teamId}/pokemons/${pokemonId}`, {
-            method: 'PUT',  // ou 'PATCH' si tu mets à jour la liste des Pokémon
+            method: 'PUT',  // Utilisation de PUT pour ajouter un Pokémon à l'équipe
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ pokemonId }),
+            // Pas besoin de 'body' ici, car les informations sont dans l'URL
         });
 
         if (!response.ok) {
-            throw new Error("Impossible d'ajouter ce Pokémon à l'équipe.");
+            const errorDetails = await response.json();  // Extraire les détails de l'erreur du serveur si disponible
+            throw new Error(errorDetails.error || "Impossible d'ajouter ce Pokémon à l'équipe.");
         }
 
-        // Retourner le Pokémon ou un message de succès
+        // Retourner l'équipe mise à jour ou un message de succès
         const updatedTeam = await response.json();
         return updatedTeam;
     } catch (error) {
@@ -127,4 +129,32 @@ async function addPokemonToTeam(pokemonId, teamId) {
         return null;
     }
 }
+
+/**
+ * Fonction pour supprimer un Pokémon existant à une équipe
+ */
+export async function deletePokemonToTeam(pokemonId, teamId) {
+    try {
+        // Requête pour supprimer un Pokémon à une équipe via une route DELETE
+        const response = await fetch(`${apiBaseUrl}/teams/${teamId}/pokemons/${pokemonId}`, {
+            method: 'DELETE',  // Utilisation de DELETE pour supprimer un Pokémon à l'équipe
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            // Pas besoin de 'body' ici, car les informations sont dans l'URL
+        });
+
+        if (!response.ok) {
+            return null;
+        }
+
+       // la ressource a bien été supprimée
+        return true;
+
+    } catch (error) {
+         // serveur down
+        console.log("API non acccessible...", error);
+    }
+}
+
 

@@ -6,7 +6,8 @@ import { fetchAndDisplayTeams,
         listenToClickOnNavTeam,
         listenToClickOnNavAddTeam, 
         listenToClickOnTeamModalClosingElement, 
-        listenToSubmitOnEditTeamForm} from "./team.module.js";
+        listenToSubmitOnEditTeamForm,
+        listenToAddPokemonToTeam} from "./team.module.js";
 
 console.log("pokedex fire");
 
@@ -22,4 +23,6 @@ export function init() {
     listenToClickOnNavAddTeam();  // Appel de la fonction d'écoute pour "Add Team"
     listenToClickOnTeamModalClosingElement();
     listenToSubmitOnEditTeamForm();
-}
+    listenToAddPokemonToTeam();
+   
+;}

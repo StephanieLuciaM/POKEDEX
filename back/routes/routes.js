@@ -2,6 +2,7 @@ import { Router } from "express";
 import { pokemonController } from "../controllers/pokemon.controller.js";
 import { controllerWrapper } from "../middlewares/controller.wrapper.js";
 import { teamController } from "../controllers/team.controller.js";
+import { typeController } from "../controllers/type.controller.js";
 
 
 
@@ -33,3 +34,14 @@ router.route('/pokemons')
 
     // afin d'ajouter un pokemon à une équipe
     router.get('/team/:id(\\d+)/pokemons', controllerWrapper(teamController.getOneTeamofPokemons));
+
+
+//**TYPES */
+    router.route('/types')
+    .get(
+        controllerWrapper(
+        typeController.getAll
+    )
+    );
+    router.route('/types/:id(\\d+)')
+    .get(controllerWrapper(typeController.getOneTypeofPokemons));

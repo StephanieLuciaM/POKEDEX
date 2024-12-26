@@ -33,3 +33,11 @@ PUT http://localhost:3000/teams/5/pokemons/4
 
 ### Dissociation d'un pokemon à une team 
 DELETE http://localhost:3000/teams/5/pokemons/4
+
+
+### Consulter la page des types 
+GET http://localhost:3000/types
+
+
+### Consulter la page d'un type  
+GET http://localhost:3000/types/10

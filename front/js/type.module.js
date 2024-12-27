@@ -1,6 +1,4 @@
-import { getTypes } from "./api.js";
-
-
+import { getTypes, loadPokemonsForType } from "./api.js";
 
 
 
@@ -64,14 +62,14 @@ function appTypeContainer(typesData) {
     // Ajouter un ID unique pour pouvoir le vérifier plus tard
     buttonElement.id = `type-${typesData.name}`;
 
-    // Ajouter un événement au bouton "Voir les détails" (si nécessaire)
-    // const oppenlistPkmButtonElement = buttonClone.querySelector(".button.is-flex-grow-1.mx-2");
-    // oppenlistPkmButtonElement.addEventListener("click", () => {
-    //     // Ajouter ici le comportement pour voir les détails
-    // });
+
+    // Ajouter un événement au bouton pour charger les Pokémon associés
+    buttonElement.addEventListener("click", () => {
+        loadPokemonsForType(typesData.id); // L'ID du type est utilisé pour charger les Pokémon
+    });
+
 
     // Ajouter le clone au DOM
     document.querySelector("#app").appendChild(buttonClone);
 }
 
-  

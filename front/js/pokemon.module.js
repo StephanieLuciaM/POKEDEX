@@ -40,7 +40,8 @@ export async function fetchAndDisplayPokemons() {
 }
 
 
-function appPkmContainer(pokemonData){
+
+export async function appPkmContainer(pokemonData){
     const template = document.querySelector("#pokemon-template");
     // cloner le contenu du template
     const clone = template.content.cloneNode(true);
@@ -60,6 +61,17 @@ function appPkmContainer(pokemonData){
             
     const pokemonContainerElement = document.querySelector("#app");
     pokemonContainerElement.appendChild(clone);
+}
+
+
+export async function appPkmImgContainer(pokemonData){
+    const template = document.querySelector("#pokemon-2-template");
+    // cloner le contenu du template
+    const clone = template.content.cloneNode(true);
+    clone.querySelector("[slot='pokemon-2-template-img']").setAttribute('src', `./src/img/${pokemonData.id}.webp`);
+            
+    const pokemonimgContainerElement = document.querySelector("#app");
+    pokemonimgContainerElement.appendChild(clone);
 }
 
 
@@ -89,6 +101,8 @@ function openPkmDetailModal(pokemonData) {
     
 
 }
+
+
 
 /**
  * Fonction qui place les écouteurs de click sur les éléments de fermeture des modales

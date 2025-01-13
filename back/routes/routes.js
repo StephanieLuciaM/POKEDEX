@@ -10,11 +10,7 @@ import { typeController } from "../controllers/type.controller.js";
 export const router = new Router();
 
 router.route('/pokemons')
-    .get(
-        controllerWrapper(
-        pokemonController.getAll
-    )
-    );
+    .get(controllerWrapper(pokemonController.getAll));
 
     router.route('/pokemons/:id(\\d+)')
     .get(controllerWrapper(pokemonController.getOne));
@@ -38,10 +34,7 @@ router.route('/pokemons')
 
 //**TYPES */
     router.route('/types')
-    .get(
-        controllerWrapper(
-        typeController.getAll
-    )
-    );
+    .get(controllerWrapper(typeController.getAll));
+    
     router.route('/types/:id(\\d+)')
     .get(controllerWrapper(typeController.getOneTypeofPokemons));

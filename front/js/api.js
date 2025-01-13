@@ -1,4 +1,8 @@
 import {apiBaseUrl} from "../js/config.js";
+import { appPkmImgContainer } from "./pokemon.module.js";
+
+
+
 
 export async function getPokemons() {
     try {
@@ -177,5 +181,44 @@ export async function deletePokemonToTeam(pokemonId, teamId) {
         console.log("API non acccessible...", error);
     }
 }
+
+
+/**
+ * Charge et affiche les Pokémon pour un type donné
+ * @param {number} typeId - L'ID du type sélectionné
+ */
+export async function loadPokemonsForType(typeId) {
+    try {
+        // 1. Appel à l'API pour récupérer les Pokémon associés à ce type
+        const response = await fetch(`${apiBaseUrl}/types/${typeId}`);
+        if (!response.ok) {
+            throw new Error("Erreur lors de la récupération des Pokémon par type");
+        }
+
+        // Récupération des données de la réponse
+        const typeData = await response.json();
+
+        // Vérification et extraction des Pokémon
+        const pokemons = typeData.pokemons || []; // Utilisation de la propriété `pokemons`
+
+        // 2. Effacer le contenu existant
+        const mainElement = document.querySelector("#app");
+        mainElement.innerHTML = "";
+
+        // 3. Ajouter les Pokémon récupérés au DOM
+        if (pokemons.length > 0) {
+            pokemons.forEach((pokemon) => appPkmImgContainer(pokemon));
+        } else {
+            // Si aucun Pokémon n'est disponible, afficher un message
+            const message = document.createElement("p");
+            message.textContent = "Aucun Pokémon disponible pour ce type.";
+            mainElement.appendChild(message);
+        }
+    } catch (error) {
+        console.error("Erreur lors du chargement des Pokémon pour le type :", error);
+    }
+}
+
+
 
 
